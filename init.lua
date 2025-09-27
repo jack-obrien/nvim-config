@@ -129,9 +129,12 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- keymappings for using barbar plugin
-vim.keymap.set({ 'n', 'i' }, '<C-Tab>', '<Cmd>BufferNext<CR>')
-vim.keymap.set({ 'n', 'i' }, '<C-S-Tab>', '<Cmd>BufferPrevious<CR>')
-vim.keymap.set({ 'n', 'i' }, '<C-w>', '<Cmd>BufferClose<CR>')
+vim.keymap.set('n', '<leader>l', '<Cmd>BufferNext<CR>')
+vim.keymap.set('n', '<leader>h', '<Cmd>BufferPrevious<CR>')
+vim.keymap.set('n', '<leader>d', '<Cmd>BufferClose<CR>')
+vim.keymap.set('n', '<leader>bda', '<Cmd>BufferCloseAllButPinned<CR>')
+vim.keymap.set('n', '<leader>bdh', '<Cmd>BufferCloseBuffersLeft<CR>')
+vim.keymap.set('n', '<leader>bdl', '<Cmd>BufferCloseBuffersRight<CR>')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
