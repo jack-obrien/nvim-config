@@ -175,9 +175,9 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { 'NMAC427/guess-indent.nvim' }, -- Detect tabstop and shiftwidth automatically
 
-  {                                -- plugin to show you pending keybinds.
+  { -- plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter',            -- Sets the loading event to 'VimEnter'
+    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       delay = 0,
       icons = {
@@ -318,6 +318,14 @@ require('lazy').setup({
 
   -- Jack's custom plugins for integrating nvim tree and barbar
   { import = 'custom.plugins' },
+
+  -- view and manipulate the undo tree!
+  {
+    'jiaoshijie/undotree',
+    config = function()
+      vim.keymap.set('n', '<leader>u', require('undotree').toggle)
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -375,11 +383,14 @@ local on_attach_enable_completion = function(client, bufnr)
   -- basically stop it auto inserting the first completion, and autoselecting the first
   -- option.
   -- Really should be built into the completion.enable function.
-  vim.opt.completeopt = { "noinsert", "popup", "menuone" }
+  vim.opt.completeopt = { 'noinsert', 'popup', 'menuone' }
 
   -- Stolen from the neovim docs. Apparently this enables autocomplete for all chars.
   -- Really should be built into the completion.enable function
-  local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+  local chars = {}
+  for i = 32, 126 do
+    table.insert(chars, string.char(i))
+  end
 
   client.server_capabilities.completionProvider.triggerCharacters = chars
   vim.lsp.completion.enable(true, client.id, bufnr, {
@@ -412,7 +423,7 @@ vim.lsp.config('pylsp', {
       },
     },
   },
-  on_attach = on_attach_enable_completion
+  on_attach = on_attach_enable_completion,
 })
 vim.lsp.enable 'pylsp'
 
@@ -423,10 +434,7 @@ vim.lsp.config('lua_ls', {
     -- Exit if we are in a workplace with existing luals config? maybe
     if client.workspace_folders then
       local path = client.workspace_folders[1].name
-      if
-          path ~= vim.fn.stdpath('config')
-          and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
-      then
+      if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
         return
       end
     end
@@ -447,12 +455,12 @@ vim.lsp.config('lua_ls', {
       workspace = {
         checkThirdParty = false,
         library = {
-          vim.env.VIMRUNTIME
+          vim.env.VIMRUNTIME,
           -- Depending on the usage, you might want to add additional paths
           -- here.
           -- '${3rd}/luv/library'
           -- '${3rd}/busted/library'
-        }
+        },
         -- Or pull in all of 'runtimepath'.
         -- NOTE: this is a lot slower and will cause issues when working on
         -- your own configuration.
@@ -460,20 +468,18 @@ vim.lsp.config('lua_ls', {
         -- library = {
         --   vim.api.nvim_get_runtime_file('', true),
         -- }
-      }
+      },
     })
   end,
   on_attach = on_attach_enable_completion,
   settings = {
-    Lua = {}
-  }
+    Lua = {},
+  },
 })
 vim.lsp.enable 'lua_ls'
 
 -- Bash langauge server
-vim.lsp.config('bashls',
-  { on_attach = on_attach_enable_completion, }
-)
+vim.lsp.config('bashls', { on_attach = on_attach_enable_completion })
 vim.lsp.enable 'bashls'
 
 -- XML language server
