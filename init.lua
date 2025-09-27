@@ -172,9 +172,9 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { 'NMAC427/guess-indent.nvim' }, -- Detect tabstop and shiftwidth automatically
 
-  { -- plugin to show you pending keybinds.
+  {                                -- plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VimEnter',            -- Sets the loading event to 'VimEnter'
     opts = {
       delay = 0,
       icons = {
@@ -237,15 +237,8 @@ require('lazy').setup({
   -- },
 
   {
-    -- Main LSP Configuration
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      -- Diagnostic Config
-      -- See :help vim.diagnostic.Opts
-
-      -- NOTE: Enable LSP language servers here!
-    end,
   },
 
   { -- Autoformat
@@ -372,8 +365,26 @@ vim.diagnostic.config {
   },
 }
 
+-- Reusable LSP on_attach function to enable autocomplete on every character press.
+local on_attach_enable_completion = function(client, bufnr)
+  -- a bit messy. This completeopt is stolen from
+  -- https://blog.viktomas.com/graph/neovim-native-built-in-lsp-autocomplete/
+  -- basically stop it auto inserting the first completion, and autoselecting the first
+  -- option.
+  -- Really should be built into the completion.enable function.
+  vim.opt.completeopt = { "noinsert", "popup", "menuone" }
+
+  -- Stolen from the neovim docs. Apparently this enables autocomplete for all chars.
+  -- Really should be built into the completion.enable function
+  local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+
+  client.server_capabilities.completionProvider.triggerCharacters = chars
+  vim.lsp.completion.enable(true, client.id, bufnr, {
+    autotrigger = true,
+  })
+end
+
 -- LSP setup
-vim.lsp.enable 'pylsp'
 vim.lsp.config('pylsp', {
   cmd = { 'pylsp', '-vvv', '--log-file', '/tmp/lsp.log' },
   settings = {
@@ -398,7 +409,9 @@ vim.lsp.config('pylsp', {
       },
     },
   },
+  on_attach = on_attach_enable_completion
 })
+vim.lsp.enable 'pylsp'
 
 vim.lsp.enable 'lua_ls'
 vim.lsp.config('lua_ls', {
@@ -409,6 +422,7 @@ vim.lsp.config('lua_ls', {
       },
     },
   },
+  on_attach = on_attach_enable_completion,
 })
 
 -- Bash langauge server
