@@ -473,7 +473,11 @@ vim.lsp.config('lua_ls', {
   end,
   on_attach = on_attach_enable_completion,
   settings = {
-    Lua = {},
+    Lua = {
+      completion = {
+        showWord = "Disable",
+      }
+    },
   },
 })
 vim.lsp.enable 'lua_ls'
