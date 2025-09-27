@@ -383,7 +383,7 @@ local on_attach_enable_completion = function(client, bufnr)
   -- basically stop it auto inserting the first completion, and autoselecting the first
   -- option.
   -- Really should be built into the completion.enable function.
-  vim.opt.completeopt = { 'noinsert', 'popup', 'menuone' }
+  vim.opt.completeopt = { 'noinsert', 'menu', 'menuone', "preinsert" }
 
   -- Stolen from the neovim docs. Apparently this enables autocomplete for all chars.
   -- Really should be built into the completion.enable function
@@ -475,8 +475,8 @@ vim.lsp.config('lua_ls', {
   settings = {
     Lua = {
       completion = {
-        showWord = "Disable",
-      }
+        showWord = 'Disable',
+      },
     },
   },
 })
