@@ -175,9 +175,9 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { 'NMAC427/guess-indent.nvim' }, -- Detect tabstop and shiftwidth automatically
 
-  { -- plugin to show you pending keybinds.
+  {                                -- plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VimEnter',            -- Sets the loading event to 'VimEnter'
     opts = {
       delay = 0,
       icons = {
@@ -326,6 +326,35 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>u', require('undotree').toggle)
     end,
   },
+
+  -- Completions plugin! Should be a little nicer than the built-in nvim completion.
+  -- Also hopefully easier to setup in th config.
+  -- Intended use of completion: when typing, ghost text will appear showing the first completion.
+  -- Press C-y to accept. Or press C-n to start browsing the completion menu.
+  {
+    'saghen/blink.cmp',
+    version = '1.*',
+    opts = {
+      sources = { default = { 'lsp' } },
+      completion = {
+        ghost_text = { enabled = true },
+        menu = { auto_show = false },
+        list = { selection = { auto_insert = false } },
+      },
+      keymap = {
+        preset = "default",
+        ['<C-n>'] = {
+          function(cmp)
+            -- Show the menu and cycle thru.
+            -- If menu is showing this will just select next.
+            cmp.show()
+            cmp.select_next()
+          end
+        }
+      }
+    }
+  },
+
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -376,28 +405,6 @@ vim.diagnostic.config {
   },
 }
 
--- Reusable LSP on_attach function to enable autocomplete on every character press.
-local on_attach_enable_completion = function(client, bufnr)
-  -- a bit messy. This completeopt is stolen from
-  -- https://blog.viktomas.com/graph/neovim-native-built-in-lsp-autocomplete/
-  -- basically stop it auto inserting the first completion, and autoselecting the first
-  -- option.
-  -- Really should be built into the completion.enable function.
-  vim.opt.completeopt = { 'noinsert', 'menu', 'menuone', "preinsert" }
-
-  -- Stolen from the neovim docs. Apparently this enables autocomplete for all chars.
-  -- Really should be built into the completion.enable function
-  local chars = {}
-  for i = 32, 126 do
-    table.insert(chars, string.char(i))
-  end
-
-  client.server_capabilities.completionProvider.triggerCharacters = chars
-  vim.lsp.completion.enable(true, client.id, bufnr, {
-    autotrigger = true,
-  })
-end
-
 -- LSP setup
 vim.lsp.config('pylsp', {
   cmd = { 'pylsp', '-vvv', '--log-file', '/tmp/lsp.log' },
@@ -423,7 +430,7 @@ vim.lsp.config('pylsp', {
       },
     },
   },
-  on_attach = on_attach_enable_completion,
+  --on_attach = on_attach_enable_completion,
 })
 vim.lsp.enable 'pylsp'
 
@@ -471,7 +478,7 @@ vim.lsp.config('lua_ls', {
       },
     })
   end,
-  on_attach = on_attach_enable_completion,
+  --on_attach = on_attach_enable_completion,
   settings = {
     Lua = {
       completion = {
@@ -483,7 +490,7 @@ vim.lsp.config('lua_ls', {
 vim.lsp.enable 'lua_ls'
 
 -- Bash langauge server
-vim.lsp.config('bashls', { on_attach = on_attach_enable_completion })
+--vim.lsp.config('bashls', { on_attach = on_attach_enable_completion })
 vim.lsp.enable 'bashls'
 
 -- XML language server
