@@ -502,5 +502,18 @@ vim.lsp.enable 'dockerls'
 -- Haskell language server
 vim.lsp.enable 'hls'
 
+-- c and cpp
+vim.lsp.enable 'clangd'
+
+
+-- Enable lsp keymaps
+
+-- On gd, go to definition of current symbol
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+
+-- on gn, prompt user for new name, and rename current symbol
+vim.keymap.set('n', 'gr', vim.lsp.buf.rename)
+
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
