@@ -241,7 +241,6 @@ require('lazy').setup({
 
   {
     'neovim/nvim-lspconfig',
-    event = { 'BufReadPre', 'BufNewFile' },
   },
 
   { -- Autoformat
@@ -407,7 +406,8 @@ vim.diagnostic.config {
 
 -- LSP setup
 vim.lsp.config('pylsp', {
-  cmd = { 'pylsp', '-vvv', '--log-file', '/tmp/lsp.log' },
+  --cmd = { 'pylsp', '-vvv', '--log-file', '/tmp/lsp.log' },
+  --filetypes = {'python'},
   settings = {
     pylsp = {
       plugins = {
@@ -477,17 +477,11 @@ vim.lsp.config('lua_ls', {
         -- }
       },
     })
-  end,
-  --on_attach = on_attach_enable_completion,
-  settings = {
-    Lua = {
-      completion = {
-        showWord = 'Disable',
-      },
-    },
-  },
+  end
 })
 vim.lsp.enable 'lua_ls'
+-- Currently in the middle of debugging some weird lsp config thing. When i apply lua_ls
+-- config it seems to overwrite the default settings from nvim-lspconfig. giving up for a little bit.
 
 -- Bash langauge server
 --vim.lsp.config('bashls', { on_attach = on_attach_enable_completion })
@@ -504,6 +498,9 @@ vim.lsp.enable 'hls'
 
 -- c and cpp
 vim.lsp.enable 'clangd'
+
+-- golang
+vim.lsp.enable 'gopls'
 
 
 -- Enable lsp keymaps
